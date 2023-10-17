@@ -18,10 +18,21 @@ const UserSchema = new Schema({
   password: {
     type: String,
   },
-  profileImage: {
+  profileImagePath: {
     type: String,
   },
-  
+  wishlist: {
+    type: Array,
+    default: [],
+  },
+  cart: {
+    type: Array,
+    default: [],
+  },
+  work: {
+    type: Array,
+    default: [],
+  },
 });
 
 const User = models.User || model("User", UserSchema);

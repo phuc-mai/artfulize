@@ -2,10 +2,12 @@
 
 import "../../styles/Register.scss";
 import { useState } from "react";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
 
 const Register = () => {
-  const router = useRouter()
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -39,31 +41,36 @@ const Register = () => {
       const form_data = new FormData();
 
       // key in [key, value] --> key = "name"
-      for (var key in formData ) {
-          form_data.append(key, formData[key]);
+      for (var key in formData) {
+        form_data.append(key, formData[key]);
       }
 
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: form_data,
       });
 
       if (response.ok) {
-        router.push("/login")
+        router.push("/login");
       }
     } catch (error) {
       console.log("Registration failed", error.message);
     }
   };
 
+  async function handleGoogleSignIn() {
+    signIn("google", { callbackUrl:"/" })
+  }
+
   return (
     <div className="register">
-      <img src="/assets/register.jpg" alt="register" className="register_decor"/>
+      <img
+        src="/assets/register.jpg"
+        alt="register"
+        className="register_decor"
+      />
       <div className="register_content">
-        <form className="register_content_form">
+        <form className="register_content_form" onSubmit={handleSubmit}>
           <input
             placeholder="Username"
             name="username"
@@ -122,6 +129,10 @@ const Register = () => {
             Register
           </button>
         </form>
+        <button type="button" onClick={() => handleGoogleSignIn()} className="google">
+          <p>Log In with Google</p>
+          <FcGoogle />
+        </button>{" "}
         <a href="/login">Already have an account? Log In Here</a>
       </div>
     </div>

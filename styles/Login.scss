@@ -68,17 +68,24 @@
           color: white;
         }
       }
+
+      .error {
+        color: $pinkred;
+      }
+
+      button {
+        margin-top: 15px;
+        width: 250px;
+  
+        @include buttonStyle;
+      }
     }
 
-    button {
-      margin-top: 15px;
-      width: 300px;
+    .google {
+      margin-top: 5px;
+      width: 250px;
 
-      @include buttonStyle;
-
-      &:hover {
-        box-shadow: 0 0 10px 3px rgba(255, 255, 255);
-      }
+      @include GoogleButton;
     }
 
     a {

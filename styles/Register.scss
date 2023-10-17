@@ -88,11 +88,15 @@
         margin-top: 15px;
 
         @include buttonStyle;
-
-        &:hover {
-          box-shadow: 0 0 10px 3px rgba(255, 255, 255);
-        }
+        width: 250px;
       }
+    }
+
+    .google {
+      margin-top: 5px;
+      width: 250px;
+
+      @include GoogleButton;
     }
 
     a {

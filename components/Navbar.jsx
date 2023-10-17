@@ -3,27 +3,23 @@
 import { IconButton } from "@mui/material";
 import { Person, Search, Menu } from "@mui/icons-material";
 import Link from "next/link";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { signIn, signOut, useSession, getProviders } from "next-auth/react";
+import { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 
 import "../styles/Navbar.scss";
-import variables from "../styles/variables.module.scss"
+import variables from "../styles/variables.module.scss";
+
 
 const Navbar = () => {
-  const [dropdownMenu, setDropdownMenu] = useState(false)
+  const {data: session} = useSession();
+    
+  const user = session?.user;
 
-  const { data: session } = useSession()
-  const [providers, setProviders] = useState(null)
+  const handleLogout = async () => {
+    signOut({ callbackUrl: '/login' });
+  };
 
-  // To sign-in using Google and next-auth
-  useEffect(() => {
-    const setUpProvider = async () => {
-      const response = await getProviders()
-      setProviders(response)
-    }
-    setUpProvider()
-  }, [])
+  const [dropdownMenu, setDropdownMenu] = useState(false);
 
   return (
     <div className="navbar">
@@ -39,18 +35,26 @@ const Navbar = () => {
       </div>
 
       <div className="navbar_right">
-        {session?.user ? <a href="/" className="host">Sell Your Work</a> : <a href="/" className="host">Sell Your Work</a> }
+        {user ? (
+          <a href="/create-work" className="host">
+            Sell Your Work
+          </a>
+        ) : (
+          <a href="/login" className="host">
+            Sell Your Work
+          </a>
+        )}
 
         <button
           className="navbar_right_account"
           onClick={() => setDropdownMenu(!dropdownMenu)}
         >
           <Menu sx={{ color: variables.darkgrey }} />
-          {!session?.user ? (
+          {!user ? (
             <Person sx={{ color: variables.darkgrey }} />
           ) : (
             <img
-              src={session?.user.image}
+              src={user.profileImagePath}
               alt="Profile"
               style={{ objectFit: "cover", borderRadius: "50%" }}
             />
@@ -59,8 +63,8 @@ const Navbar = () => {
 
         {dropdownMenu && !user && (
           <div className="navbar_right_accountmenu">
-            <Link href="/">Log In</Link>
-            <Link href="/">Sign Up</Link>
+            <Link href="/login">Log In</Link>
+            <Link href="/register">Sign Up</Link>
           </div>
         )}
 
@@ -69,13 +73,8 @@ const Navbar = () => {
             <Link href="/">Wishlist</Link>
             <Link href="/">Cart</Link>
             <Link href="/">Your Shop</Link>
-            <Link href="/">Sell Your Work</Link>
-
-            <Link
-              href="/"
-            >
-              Log Out
-            </Link>
+            <Link href="/create-work">Sell Your Work</Link>
+            <a onClick={handleLogout}>Log Out </a>
           </div>
         )}
       </div>
