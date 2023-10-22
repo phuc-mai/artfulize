@@ -1,45 +1,27 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import Navbar from "@components/Navbar";
 import Form from "@components/Form";
-
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { data } from "autoprefixer";
 import Loader from "@components/Loader";
 
-const CreateWork = () => {
+const UpdateForm = () => {
   const router = useRouter();
-  const { data: session } = useSession();
-  // const [loading, setLoading] = useState(true);
+
+  const [loading, setLoading] = useState(true);
+
+  const searchParams = useSearchParams();
+  const workId = searchParams.get("id");
 
   const [work, setWork] = useState({
-    creator: "",
     category: "",
     title: "",
     description: "",
     price: "",
     photos: [],
   });
-
-  if (session) {
-    work.creator = session?.user?._id // Loading "session" takes time, so it can be undefined
-  }
-
-  console.log(work)
-
-  // useEffect(() => {
-  //   if(!session || !loading) return; // loading "session" takes time, so it can be undefined, must have loading
-  //   setWork({
-  //     creator: session?.user?._id,
-  //     category: "",
-  //     title: "",
-  //     description: "",
-  //     price: "",
-  //     photos: [],
-  //   });
-  //   setLoading(false);
-  // }, [session]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,7 +34,7 @@ const CreateWork = () => {
   };
 
   /* UPLOAD & REMOVE PHOTOS */
-  
+
   const handleUploadPhotos = (e) => {
     const newPhotos = e.target.files;
     setWork((prevWork) => {
@@ -82,15 +64,35 @@ const CreateWork = () => {
     setWork({ ...work, photos: items });
   };
 
+  useEffect(() => {
+    const getWorkDetails = async () => {
+      const response = await fetch(`api/work/${workId}`);
+      const data = await response.json();
+
+      setWork({
+        category: data.category,
+        title: data.title,
+        description: data.description,
+        price: data.price,
+        photos: data.workPhotosPaths,
+      });
+
+      setLoading(false);
+    };
+
+    if (workId) getWorkDetails();
+  }, [workId]);
+
   const handlePost = async (e) => {
     e.preventDefault();
+
+    if (!workId) return alert("Missing WorkId!");
 
     try {
       /* Create a new FormData object to handle file uploads */
       const formData = new FormData();
-
-      // key in [key, value] --> key = "name"
-      for (var key in work) {
+       // key in [key, value] --> key = "name"
+       for (var key in work) {
         formData.append(key, work[key]);
       }
 
@@ -99,10 +101,10 @@ const CreateWork = () => {
         formData.append("workPhotosPaths", photo);
       });
 
-      /* Send a POST request to your server to add the Listing */
-      const response = await fetch("/api/work/new", {
-        method: "POST",
-        body: formData,
+      /* Send a PATCH request to your server to edit the existing work */
+      const response = await fetch(`/api/work/${workId}`, {
+        method: "PATCH",
+        body: formData
       });
 
       if (response.ok) {
@@ -113,11 +115,15 @@ const CreateWork = () => {
     }
   };
 
-  return (
+  console.log(work)
+
+  return loading ? (
+    <Loader />
+  ) : (
     <>
       <Navbar />
       <Form
-        type="Create"
+        type="Update"
         work={work}
         setWork={setWork}
         handleDragPhoto={handleDragPhoto}
@@ -130,4 +136,4 @@ const CreateWork = () => {
   );
 };
 
-export default CreateWork;
+export default UpdateForm;

@@ -1,69 +1,45 @@
-import "../../styles/ListingCard.scss";
-import variables from "../../styles/variables.scss";
+"use client";
+
+import "../styles/WorkCard.scss";
+import variables from "../styles/variables.module.scss";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import {
   Favorite,
+  FavoriteBorder,
   ArrowForwardIos,
   ArrowBackIosNew,
 } from "@mui/icons-material";
 
-const ListingCard = ({
-  listingId,
-  listingPhotosPaths,
-  city,
-  province,
-  country,
-  category,
-  type,
-  price,
-  booking,
-  startDate,
-  endDate,
-  totalPrice,
-}) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  /* ADD TO WISHLIST */
-  const user = useSelector((state) => state.user);
-  const wishList = user?.wishList || [];
-
-  const isLiked = wishList.find((item) => item?._id === listingId);
-
-  const patchWishList = async () => {
-    const response = await fetch(
-      `https://homeheavenserver.phucmai.com/users/${user._id}/${listingId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    dispatch(setWishList(data.wishlist));
-  };
+const WorkCard = ({ work }) => {
+  const router = useRouter();
 
   /* SLIDER FOR IMAGES */
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const goToNextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % listingPhotosPaths.length);
+    setCurrentIndex(
+      (prevIndex) => (prevIndex + 1) % work.workPhotosPaths.length
+    );
   };
 
   const goToPrevSlide = () => {
     setCurrentIndex(
       (prevIndex) =>
-        (prevIndex - 1 + listingPhotosPaths.length) % listingPhotosPaths.length
+        (prevIndex - 1 + work.workPhotosPaths.length) %
+        work.workPhotosPaths.length
     );
   };
 
+  const [isLiked, setIsLiked] = useState(false);
+
   return (
     <div
-      className="listing-card"
+      className="work-card"
       onClick={() => {
-        navigate(`/properties/${listingId}`);
+        router.push(`/work-details?id=${work._id}`);
       }}
     >
       <div className="slider-container">
@@ -71,12 +47,9 @@ const ListingCard = ({
           className="slider"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {listingPhotosPaths?.map((photo, index) => (
+          {work.workPhotosPaths?.map((photo, index) => (
             <div key={index} className="slide">
-              <img
-                src={`https://homeheavenserver.phucmai.com/${photo.replace("public", "")}`}
-                alt={`photo ${index + 1}`}
-              />
+              <img src={photo} alt={`photo ${index + 1}`} />
               <div
                 className="prev-button"
                 onClick={(e) => {
@@ -100,45 +73,47 @@ const ListingCard = ({
         </div>
       </div>
 
-      <h3>
-        {city}, {province}, {country}
-      </h3>
-      <p>{category}</p>
-
-      {!booking ? (
-        <>
-          <p>{type}</p>
+      <div className="text">
+        <div>
+          <h3>{work.title}</h3>
           <p>
-            <span>${price}</span> per night
+            by <span>{work.creator.username}</span> in{" "}
+            <span>{work.category}</span>
           </p>
-        </>
-      ) : (
-        <>
-          <p>
-            {startDate} - {endDate}
-          </p>
-
-          <p>
-            <span>${totalPrice}</span> total
-          </p>
-        </>
-      )}
+        </div>
+        <div className="price">$ {work.price}</div>
+      </div>
 
       <div
         className="favorite"
-        onClick={(e) => {
-          patchWishList();
-          e.stopPropagation();
-        }}
+        // onClick={(e) => {
+        //   patchWishList();
+        //   e.stopPropagation();
+        // }}
       >
         {isLiked ? (
-          <Favorite sx={{ color: variables.pinkred }} />
+          <Favorite
+            sx={{
+              color: variables.pinkred,
+              borderRadius: "50%",
+              backgroundColor: "white",
+              padding: "5px",
+              fontSize: "30px",
+            }}
+          />
         ) : (
-          <Favorite sx={{ color: "white" }} />
+          <FavoriteBorder
+            sx={{
+              borderRadius: "50%",
+              backgroundColor: "white",
+              padding: "5px",
+              fontSize: "30px",
+            }}
+          />
         )}
       </div>
     </div>
   );
 };
 
-export default ListingCard;
+export default WorkCard;

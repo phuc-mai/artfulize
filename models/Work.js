@@ -1,9 +1,9 @@
 import { Schema, model, models } from "mongoose";
 
 const WorkSchema = new Schema({
-  ownerId: {
-    type: String,
-    required: true,
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
   },
   category: {
     type: String,

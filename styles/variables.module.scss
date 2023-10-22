@@ -3,6 +3,7 @@ $blue: #24355a;
 $lightgrey: #f7f8f8;
 $grey: #bdb9b9;
 $darkgrey: #969393;
+$lightblue: #DFF8F6;
 
 @mixin shadow {
   box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.2);
@@ -56,4 +57,5 @@ $darkgrey: #969393;
   lightgrey: $lightgrey;
   grey: $grey;
   darkgrey: $darkgrey;
+  lightblue: $lightblue
 }

@@ -10,7 +10,7 @@ export async function POST(req) {
     const data = await req.formData();
 
     /* Extract information from the form */
-    const ownerId = data.get('ownerId');
+    const creator = data.get('creator');
     const category = data.get('category');
     const title = data.get('title');
     const description = data.get('description');
@@ -39,12 +39,12 @@ export async function POST(req) {
       await writeFile(workImagePath, buffer);
 
       // Store the file path in an array
-      workPhotosPaths.push(workImagePath);
+      workPhotosPaths.push(`/uploads/${photo.name}`);
     }
 
     /* Create a new Work */
     const newWork = new Work({
-      ownerId,
+      creator,
       category,
       title,
       description,
@@ -56,10 +56,10 @@ export async function POST(req) {
     await newWork.save();
 
     /* Send a success response */
-    return NextResponse.json({ message: "Work published successfully!", work: newWork  }, { status: 200 });
+    return new Response(JSON.stringify(newWork), { status: 200 })
   }
   catch (err) {
     console.log(err)
-    return NextResponse.json({ message: err }, { status: 500 });
+    return new Response("Failed to create a new Prompt", { status: 500 })
   }
 }

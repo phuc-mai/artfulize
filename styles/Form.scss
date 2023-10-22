@@ -1,7 +1,7 @@
 @import "./variables.module.scss";
 @import "./breakpoints.scss";
 
-.create-work {
+.form {
   background-color: $lightgrey;
   padding: 40px 60px 120px;
 
@@ -11,6 +11,7 @@
 
   h1 {
     color: $blue;
+    margin-bottom: 30px;
   }
 
   form {
