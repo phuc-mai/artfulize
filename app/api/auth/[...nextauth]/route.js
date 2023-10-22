@@ -46,9 +46,10 @@ const handler = NextAuth({
   ],
 
   secret: process.env.NEXTAUTH_SECRET,
-
+  strategy: "database",
   callbacks: {
     async session({ session }) {
+      
       // Ensure that the user is authenticated before making a database query
       if (session.user && session.user.email) {
         const sessionUser = await User.findOne({

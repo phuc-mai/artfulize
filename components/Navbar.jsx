@@ -9,14 +9,14 @@ import { signOut, useSession } from "next-auth/react";
 import "../styles/Navbar.scss";
 import variables from "../styles/variables.module.scss";
 
-
 const Navbar = () => {
-  const {data: session} = useSession();
-    
+  const { data: session } = useSession();
+
   const user = session?.user;
+  console.log(user);
 
   const handleLogout = async () => {
-    signOut({ callbackUrl: '/login' });
+    signOut({ callbackUrl: "/login" });
   };
 
   const [dropdownMenu, setDropdownMenu] = useState(false);

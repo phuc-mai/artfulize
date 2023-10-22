@@ -4,7 +4,7 @@ import "../styles/WorkCard.scss";
 import variables from "../styles/variables.module.scss";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   Favorite,
@@ -12,6 +12,7 @@ import {
   ArrowForwardIos,
   ArrowBackIosNew,
 } from "@mui/icons-material";
+import { useSession } from "next-auth/react";
 
 const WorkCard = ({ work }) => {
   const router = useRouter();
@@ -33,7 +34,21 @@ const WorkCard = ({ work }) => {
     );
   };
 
-  const [isLiked, setIsLiked] = useState(false);
+  /* ADD TO WISHLIST */
+  const { data: session, update } = useSession();
+  const userId = session?.user?._id;
+  const wishlist = session?.user?.wishlist;
+  
+  const isLiked = wishlist?.find((item) => item?._id === work._id);
+
+  const patchWishlist = async () => {
+    const response = await fetch(`/api/users/${userId}/wishlist/${work._id}`, {
+      method: "PATCH",
+    });
+
+    const data = await response.json();
+    update({user: {wishlist: data.wishlist}});
+  };
 
   return (
     <div
@@ -86,10 +101,10 @@ const WorkCard = ({ work }) => {
 
       <div
         className="favorite"
-        // onClick={(e) => {
-        //   patchWishList();
-        //   e.stopPropagation();
-        // }}
+        onClick={(e) => {
+          e.stopPropagation();
+          patchWishlist();
+        }}
       >
         {isLiked ? (
           <Favorite
