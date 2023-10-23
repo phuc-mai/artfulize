@@ -13,7 +13,6 @@ const Navbar = () => {
   const { data: session } = useSession();
 
   const user = session?.user;
-  console.log(user);
 
   const handleLogout = async () => {
     signOut({ callbackUrl: "/login" });
@@ -72,7 +71,7 @@ const Navbar = () => {
           <div className="navbar_right_accountmenu">
             <Link href="/">Wishlist</Link>
             <Link href="/">Cart</Link>
-            <Link href="/">Your Shop</Link>
+            <Link href={`/profile?id=${user._id}`}>Your Shop</Link>
             <Link href="/create-work">Sell Your Work</Link>
             <a onClick={handleLogout}>Log Out </a>
           </div>

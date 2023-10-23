@@ -4,17 +4,17 @@ import "../styles/WorkCard.scss";
 import variables from "../styles/variables.module.scss";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
   Favorite,
   FavoriteBorder,
   ArrowForwardIos,
   ArrowBackIosNew,
-} from "@mui/icons-material";
+  Delete} from "@mui/icons-material";
 import { useSession } from "next-auth/react";
 
-const WorkCard = ({ work }) => {
+const WorkCard = ({ work, handleDelete }) => {
   const router = useRouter();
 
   /* SLIDER FOR IMAGES */
@@ -38,7 +38,7 @@ const WorkCard = ({ work }) => {
   const { data: session, update } = useSession();
   const userId = session?.user?._id;
   const wishlist = session?.user?.wishlist;
-  
+
   const isLiked = wishlist?.find((item) => item?._id === work._id);
 
   const patchWishlist = async () => {
@@ -47,7 +47,7 @@ const WorkCard = ({ work }) => {
     });
 
     const data = await response.json();
-    update({user: {wishlist: data.wishlist}});
+    update({ user: { wishlist: data.wishlist } });
   };
 
   return (
@@ -99,25 +99,15 @@ const WorkCard = ({ work }) => {
         <div className="price">$ {work.price}</div>
       </div>
 
-      <div
-        className="favorite"
-        onClick={(e) => {
-          e.stopPropagation();
-          patchWishlist();
-        }}
-      >
-        {isLiked ? (
-          <Favorite
-            sx={{
-              color: variables.pinkred,
-              borderRadius: "50%",
-              backgroundColor: "white",
-              padding: "5px",
-              fontSize: "30px",
-            }}
-          />
-        ) : (
-          <FavoriteBorder
+      {userId === work?.creator._id ? (
+        <div
+          className="icon"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDelete;
+          }}
+        >
+          <Delete
             sx={{
               borderRadius: "50%",
               backgroundColor: "white",
@@ -125,8 +115,37 @@ const WorkCard = ({ work }) => {
               fontSize: "30px",
             }}
           />
-        )}
-      </div>
+        </div>
+      ) : (
+        <div
+          className="icon"
+          onClick={(e) => {
+            e.stopPropagation();
+            patchWishlist();
+          }}
+        >
+          {isLiked ? (
+            <Favorite
+              sx={{
+                color: variables.pinkred,
+                borderRadius: "50%",
+                backgroundColor: "white",
+                padding: "5px",
+                fontSize: "30px",
+              }}
+            />
+          ) : (
+            <FavoriteBorder
+              sx={{
+                borderRadius: "50%",
+                backgroundColor: "white",
+                padding: "5px",
+                fontSize: "30px",
+              }}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

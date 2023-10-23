@@ -70,10 +70,12 @@
     display: flex;
     gap: 20px;
     align-items: center;
+    cursor: pointer;
 
     img {
       width: 60px;
       height: 60px;
+      border-radius: 50%;
       margin: 0;
     }
   }

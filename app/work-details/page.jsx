@@ -13,10 +13,9 @@ import Loader from "@components/Loader";
 
 const WorkDetails = () => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const [loading, setLoading] = useState(true);
-  const [isLiked, setIsLiked] = useState(true);
 
   const [work, setWork] = useState({});
 
@@ -35,6 +34,21 @@ const WorkDetails = () => {
     if (workId) getWorkDetails();
   }, [workId]);
 
+  /* ADD TO WISHLIST */
+  const userId = session?.user?._id;
+  const wishlist = session?.user?.wishlist;
+  
+  const isLiked = wishlist?.find((item) => item?._id === workId);
+
+  const patchWishlist = async () => {
+    const response = await fetch(`/api/users/${userId}/wishlist/${workId}`, {
+      method: "PATCH",
+    });
+
+    const data = await response.json();
+    update({user: {wishlist: data.wishlist}});
+  };
+
   return loading ? (
     <Loader />
   ) : (
@@ -43,13 +57,13 @@ const WorkDetails = () => {
       <div className="work-details">
         <div className="title">
           <h1>{work.title}</h1>
-          {work?.creator?._id === session?.user?._id ? (
+          {work?.creator?._id === userId ? (
             <div className="save" onClick={() => {router.push(`/update-work?id=${work._id}`)}}>
               <Edit />
               <p>Edit</p>
             </div>
           ) : (
-            <div className="save">
+            <div className="save" onClick={patchWishlist}>
               {isLiked ? (
                 <Favorite sx={{ color: variables.pinkred }} />
               ) : (
@@ -66,7 +80,7 @@ const WorkDetails = () => {
           ))}
         </div>
         <hr />
-        <div className="profile">
+        <div className="profile" onClick={() => {router.push(`/profile?id=${work.creator._id}`)}}>
           <img src={work.creator.profileImagePath} alt="profile" />
           <h3>Created by {work.creator.username}</h3>
         </div>
