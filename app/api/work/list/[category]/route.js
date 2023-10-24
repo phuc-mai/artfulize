@@ -1,19 +1,19 @@
 import { connectToDB } from "@app/mongodb/database";
 import Work from "@models/Work";
 
-export const GET = async (req) => {
+export const GET = async (req, {params}) => {
   try {
     await connectToDB();
 
-    const { category } = req.query;
+    const { category } = params;
 
     let work;
 
-      if (category) {
-        work = await Work.find({ category }).populate("creator");
-      } else {
-        work = await Work.find().populate("creator");
-      }
+    if (category !== 'all') {
+      work = await Work.find({ category }).populate("creator");
+    } else {
+      work = await Work.find().populate("creator");
+    }
 
     // const work = await Work.find().populate("creator");
 

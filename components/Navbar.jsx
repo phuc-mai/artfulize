@@ -8,14 +8,24 @@ import { signOut, useSession } from "next-auth/react";
 
 import "../styles/Navbar.scss";
 import variables from "../styles/variables.module.scss";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const { data: session } = useSession();
+
+  const [query, setQuery] = useState("");
+
+  const router = useRouter();
 
   const user = session?.user;
 
   const handleLogout = async () => {
     signOut({ callbackUrl: "/login" });
+  };
+
+  const searchWork = async () => {
+    if(query.trim() == "") router.push(`/search/all`)
+    else router.push(`/search/${query}`)
   };
 
   const [dropdownMenu, setDropdownMenu] = useState(false);
@@ -27,10 +37,24 @@ const Navbar = () => {
       </a>
 
       <div className="navbar_search">
-        <input placeholder="Search..." />
-        <IconButton>
-          <Search sx={{ color: variables.pinkred }} />
-        </IconButton>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            searchWork();
+          }}
+        >
+          <input
+            placeholder="Search..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <IconButton>
+            <Search
+              sx={{ color: variables.pinkred }}
+              onClick={() => searchWork()}
+            />
+          </IconButton>
+        </form>
       </div>
 
       <div className="navbar_right">

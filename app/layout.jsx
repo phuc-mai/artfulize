@@ -14,6 +14,7 @@ const RootLayout = ({ children }) => (
         <main>
           {children}
         </main>
+
       </Provider>
     </body>
   </html>

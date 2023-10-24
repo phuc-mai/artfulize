@@ -104,7 +104,7 @@ const WorkCard = ({ work, handleDelete }) => {
           className="icon"
           onClick={(e) => {
             e.stopPropagation();
-            handleDelete;
+            handleDelete();
           }}
         >
           <Delete
