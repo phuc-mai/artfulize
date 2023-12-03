@@ -1,15 +1,14 @@
 import Work from "@models/Work";
 import { connectToDB } from "@app/mongodb/database";
-import { writeFile } from "fs/promises"
 
 export const GET = async (req, { params }) => {
   try {
     await connectToDB();
 
-    const {query} = params;
+    const { query } = params;
     let work = [];
     
-    if(query == "all") {
+    if (query == "all") {
       work = await Work.find().populate("creator");
     }
     else work = await Work.find({
@@ -21,7 +20,7 @@ export const GET = async (req, { params }) => {
 
     if(!work) return new Response("the Work Not Found", { status: 404 });
 
-    return new Response(JSON.stringify({workList: work}), { status: 200 });
+    return new Response(JSON.stringify(work), { status: 200 });
 
   } catch (err) {
     console.log(err)

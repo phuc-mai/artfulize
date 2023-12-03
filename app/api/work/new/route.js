@@ -33,7 +33,7 @@ export async function POST(req) {
       const buffer = Buffer.from(bytes);
 
       // Define the destination path for the uploaded file
-      const workImagePath = `/Developer/Projects/artfulize/public/uploads/${photo.name}`;
+      const workImagePath = `/Developer/Portfolio Projects/artfulize/public/uploads/${photo.name}`;
 
       // Write the buffer to the filesystem
       await writeFile(workImagePath, buffer);
@@ -60,6 +60,6 @@ export async function POST(req) {
   }
   catch (err) {
     console.log(err)
-    return new Response("Failed to create a new Prompt", { status: 500 })
+    return new Response("Failed to create a new Work", { status: 500 })
   }
 }

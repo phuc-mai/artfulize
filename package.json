@@ -13,6 +13,8 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.12",
     "@mui/material": "^5.14.12",
+    "@stripe/react-stripe-js": "^2.4.0",
+    "@stripe/stripe-js": "^2.2.0",
     "bcryptjs": "^2.4.3",
     "formidable": "^3.5.1",
     "mongodb": "^6.1.0",
@@ -24,7 +26,10 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18",
     "react-icons": "^4.11.0",
-    "sass": "^1.69.1"
+    "react-responsive-carousel": "^3.2.23",
+    "sass": "^1.69.1",
+    "stripe": "^14.7.0",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "autoprefixer": "^10",

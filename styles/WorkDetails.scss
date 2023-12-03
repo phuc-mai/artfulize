@@ -51,6 +51,60 @@
     }
   }
 
+  .slider-container {
+    max-width: 800px;
+    overflow: hidden;
+    border-radius: 10px;
+    margin: 40px 0;
+
+    .slider {
+      display: flex;
+      transition: transform 0.5s ease;
+
+      .slide {
+        position: relative;
+        flex: 0 0 100%;
+        width: 100%;
+        height: auto;
+        display: flex;
+        align-items: center;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+
+        .prev-button,
+        .next-button {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          padding: 6px;
+          border-radius: 50%;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: rgba(255, 255, 255, 0.7);
+          z-index: 99;
+
+          &:hover {
+            background-color: white;
+          }
+        }
+
+        .prev-button {
+          left: 10px;
+        }
+
+        .next-button {
+          right: 10px;
+        }
+      }
+    }
+  }
+
   .photos {
     display: flex;
     flex-wrap: wrap;
@@ -58,7 +112,22 @@
     margin: 20px 0;
 
     img {
-      max-width: 280px;
+      cursor: pointer;
+      width: 150px;
+      height: auto;
+    }
+
+    .selected {
+      border: 3px black solid;
+    }
+
+    .show-more {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
   }
 
@@ -87,5 +156,9 @@
 
   button {
     @include buttonStyle;
+    
+    &:hover {
+      box-shadow: 0 0 10px 3px rgb(98, 98, 98);
+    }
   }
 }

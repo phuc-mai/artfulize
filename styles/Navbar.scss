@@ -45,28 +45,25 @@
     align-items: center;
     gap: 20px;
 
-    .host {
-      text-decoration: none;
-      color: black;
-      font-weight: 700;
-      cursor: pointer;
+    .cart {
+      margin: 0;
+      border: 1px solid $grey;
+      padding: 5px 15px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
 
-      &:hover {
-        color: $pinkred;
-      }
-
-      @include sm {
-        display: none;
+      span {
+        font-weight: 700;
       }
     }
 
     &_account {
-      height: 50px;
       display: flex;
       align-items: center;
       padding: 0 10px;
-      border: 1px solid $grey;
-      border-radius: 30px;
+      border: none;
       display: flex;
       gap: 10px;
       background-color: white;

@@ -1,7 +1,7 @@
 "use client";
 
 import { IconButton } from "@mui/material";
-import { Person, Search, Menu } from "@mui/icons-material";
+import { Person, Search, Menu, ShoppingCart } from "@mui/icons-material";
 import Link from "next/link";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
@@ -9,26 +9,31 @@ import { signOut, useSession } from "next-auth/react";
 import "../styles/Navbar.scss";
 import variables from "../styles/variables.module.scss";
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@store/store";
 
 const Navbar = () => {
   const { data: session } = useSession();
+  const user = session?.user;
 
   const [query, setQuery] = useState("");
 
   const router = useRouter();
-
-  const user = session?.user;
 
   const handleLogout = async () => {
     signOut({ callbackUrl: "/login" });
   };
 
   const searchWork = async () => {
-    if(query.trim() == "") router.push(`/search/all`)
-    else router.push(`/search/${query}`)
+    if (query === "") {
+      router.push(`/search/all`);
+    } else {
+      router.push(`/search/${query}`);
+    }
   };
 
   const [dropdownMenu, setDropdownMenu] = useState(false);
+
+  const { cart } = useCartStore()
 
   return (
     <div className="navbar">
@@ -58,13 +63,10 @@ const Navbar = () => {
       </div>
 
       <div className="navbar_right">
-        {user ? (
-          <a href="/create-work" className="host">
-            Sell Your Work
-          </a>
-        ) : (
-          <a href="/login" className="host">
-            Sell Your Work
+        {user && (
+          <a href="/cart" className="cart">
+            <ShoppingCart sx={{ color: variables.darkgrey }} />
+            Cart <span>({cart.length})</span>
           </a>
         )}
 
@@ -93,9 +95,9 @@ const Navbar = () => {
 
         {dropdownMenu && user && (
           <div className="navbar_right_accountmenu">
-            <Link href="/">Wishlist</Link>
-            <Link href="/">Cart</Link>
-            <Link href={`/profile?id=${user._id}`}>Your Shop</Link>
+            <Link href="/wishlist">Wishlist</Link>
+            <Link href="/cart">Cart</Link>
+            <Link href={`/shop?id=${user._id}`}>Your Shop</Link>
             <Link href="/create-work">Sell Your Work</Link>
             <a onClick={handleLogout}>Log Out </a>
           </div>

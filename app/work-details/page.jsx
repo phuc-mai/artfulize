@@ -5,11 +5,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 import variables from "../../styles/variables.module.scss";
-import { Favorite, FavoriteBorder, Edit } from "@mui/icons-material";
+import {
+  Favorite,
+  FavoriteBorder,
+  Edit,
+  ArrowForwardIos,
+  ArrowBackIosNew,
+  ShoppingCart,
+} from "@mui/icons-material";
 
 import "../../styles/WorkDetails.scss";
 import Navbar from "@components/Navbar";
 import Loader from "@components/Loader";
+import { useCartStore } from "@store/store";
 
 const WorkDetails = () => {
   const router = useRouter();
@@ -21,6 +29,40 @@ const WorkDetails = () => {
 
   const searchParams = useSearchParams();
   const workId = searchParams.get("id");
+
+  /* SLIDER FOR PHOTOS */
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToNextSlide = () => {
+    setCurrentIndex(
+      (prevIndex) => (prevIndex + 1) % work.workPhotosPaths.length
+    );
+  };
+
+  const goToPrevSlide = () => {
+    setCurrentIndex(
+      (prevIndex) =>
+        (prevIndex - 1 + work.workPhotosPaths.length) %
+        work.workPhotosPaths.length
+    );
+  };
+
+  /* SHOW MORE PHOTOS */
+  const [visiblePhotos, setVisiblePhotos] = useState(5);
+
+  const loadMorePhotos = () => {
+    setVisiblePhotos(visiblePhotos + 5);
+  };
+
+  /* SELECT PHOTOS TO SHOW */
+  const [selectedPhoto, setSelectedPhoto] = useState(0);
+
+  const handleSelectPhoto = (index) => {
+    setSelectedPhoto(index);
+    setCurrentIndex(index);
+  };
+
+  /* GET WORK DETAILS */
 
   useEffect(() => {
     const getWorkDetails = async () => {
@@ -37,7 +79,7 @@ const WorkDetails = () => {
   /* ADD TO WISHLIST */
   const userId = session?.user?._id;
   const wishlist = session?.user?.wishlist;
-  
+
   const isLiked = wishlist?.find((item) => item?._id === workId);
 
   const patchWishlist = async () => {
@@ -46,7 +88,22 @@ const WorkDetails = () => {
     });
 
     const data = await response.json();
-    update({user: {wishlist: data.wishlist}});
+    update({ user: { wishlist: data.wishlist } });
+  };
+
+  /* ADD TO CART */
+  const { addToCart } = useCartStore();
+
+  const addToCartHandler = () => {
+      addToCart({
+        workId: work._id,
+        image: work.workPhotosPaths[0],
+        title: work.title,
+        category: work.category,
+        creator: work.creator,
+        price: work.price,
+        quantity: 1,
+      });
   };
 
   return loading ? (
@@ -58,7 +115,12 @@ const WorkDetails = () => {
         <div className="title">
           <h1>{work.title}</h1>
           {work?.creator?._id === userId ? (
-            <div className="save" onClick={() => {router.push(`/update-work?id=${work._id}`)}}>
+            <div
+              className="save"
+              onClick={() => {
+                router.push(`/update-work?id=${work._id}`);
+              }}
+            >
               <Edit />
               <p>Edit</p>
             </div>
@@ -74,20 +136,71 @@ const WorkDetails = () => {
           )}
         </div>
 
+        <div className="slider-container">
+          <div
+            className="slider"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {work.workPhotosPaths?.map((photo, index) => (
+              <div key={index} className="slide">
+                <img src={photo} alt={`photo ${index + 1}`} />
+                <div
+                  className="prev-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToPrevSlide(e);
+                  }}
+                >
+                  <ArrowBackIosNew sx={{ fontSize: "15px" }} />
+                </div>
+                <div
+                  className="next-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToNextSlide(e);
+                  }}
+                >
+                  <ArrowForwardIos sx={{ fontSize: "15px" }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="photos">
-          {work.workPhotosPaths?.map((photo, index) => (
-            <img key={index} src={photo} alt="work demo" />
+          {work.workPhotosPaths?.slice(0, visiblePhotos).map((photo, index) => (
+            <img
+              key={index}
+              src={photo}
+              alt="work demo"
+              onClick={() => handleSelectPhoto(index)}
+              className={selectedPhoto === index ? "selected" : ""}
+            />
           ))}
+
+          {visiblePhotos < work.workPhotosPaths.length && (
+            <div className="show-more" onClick={loadMorePhotos}>
+              <ArrowForwardIos sx={{ fontSize: "40px" }} />
+              Show More
+            </div>
+          )}
         </div>
         <hr />
-        <div className="profile" onClick={() => {router.push(`/profile?id=${work.creator._id}`)}}>
+        <div
+          className="profile"
+          onClick={() => {
+            router.push(`/profile?id=${work.creator._id}`);
+          }}
+        >
           <img src={work.creator.profileImagePath} alt="profile" />
           <h3>Created by {work.creator.username}</h3>
         </div>
         <hr />
         <h3>About this product</h3>
         <p>{work.description}</p>
-        <button type="submit">ADD TO CART</button>
+        <button type="submit" onClick={() => addToCartHandler()}>
+          <ShoppingCart /> ADD TO CART
+        </button>
       </div>
     </>
   );

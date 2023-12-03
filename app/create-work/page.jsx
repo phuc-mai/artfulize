@@ -1,4 +1,3 @@
-"use client";
 import Navbar from "@components/Navbar";
 import Form from "@components/Form";
 
@@ -25,8 +24,6 @@ const CreateWork = () => {
   if (session) {
     work.creator = session?.user?._id // Loading "session" takes time, so it can be undefined
   }
-
-  console.log(work)
 
   // useEffect(() => {
   //   if(!session || !loading) return; // loading "session" takes time, so it can be undefined, must have loading
@@ -106,7 +103,7 @@ const CreateWork = () => {
       });
 
       if (response.ok) {
-        router.push("/");
+        router.push(`/shop?id=${session?.user?._id}`);
       }
     } catch (error) {
       console.log("Publish Work failed", error.message);

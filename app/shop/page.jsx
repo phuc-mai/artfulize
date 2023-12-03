@@ -2,8 +2,8 @@
 
 import Navbar from "@components/Navbar";
 import Loader from "@components/Loader";
-import WorkList from "@components/WorkList";
-import "../../styles/Profile.scss";
+import List from "@components/List";
+import "../../styles/TitleList.scss";
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
@@ -33,26 +33,6 @@ const Profile = () => {
     if (profileId) getWorkList();
   }, [profileId]);
 
-  const handleDelete = async (work) => {
-    const hasConfirmed = confirm(
-      "Are you sure you want to delete this prompt?"
-    );
-
-    if (hasConfirmed) {
-      try {
-        await fetch(`/api/work/${work._id.toString()}`, {
-          method: "DELETE",
-        });
-
-        const filteredWork = workList.filter((item) => item._id !== work._id);
-
-        setWorkList(filteredWork);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
-
   return loading ? (
     <Loader />
   ) : (
@@ -60,12 +40,12 @@ const Profile = () => {
       <Navbar />
 
       {loggedInUserId === profileId ? (
-        <h1 className="owner-list">Your Work List</h1>
+        <h1 className="title-list">Your Works</h1>
       ) : (
-        <h1 className="owner-list">{profile.username}'s Work List</h1>
+        <h1 className="title-list">{profile.username}'s Works</h1>
       )}
 
-      <WorkList data={workList} handleDelete={handleDelete} />
+      <List data={workList} setWorkList={setWorkList} />
     </>
   );
 };

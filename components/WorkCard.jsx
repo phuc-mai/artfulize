@@ -11,11 +11,13 @@ import {
   FavoriteBorder,
   ArrowForwardIos,
   ArrowBackIosNew,
-  Delete} from "@mui/icons-material";
+  Delete,
+} from "@mui/icons-material";
 import { useSession } from "next-auth/react";
 
 const WorkCard = ({ work, handleDelete }) => {
   const router = useRouter();
+  console.log(work)
 
   /* SLIDER FOR IMAGES */
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -34,9 +36,10 @@ const WorkCard = ({ work, handleDelete }) => {
     );
   };
 
-  /* ADD TO WISHLIST */
   const { data: session, update } = useSession();
   const userId = session?.user?._id;
+
+  /* ADD TO WISHLIST */
   const wishlist = session?.user?.wishlist;
 
   const isLiked = wishlist?.find((item) => item?._id === work._id);
@@ -49,6 +52,23 @@ const WorkCard = ({ work, handleDelete }) => {
     const data = await response.json();
     update({ user: { wishlist: data.wishlist } });
   };
+
+  /* DELETE WORK */
+  // const handleDelete = async () => {
+  //   const hasConfirmed = confirm(
+  //     "Are you sure you want to delete this prompt?"
+  //   );
+
+  //   if (hasConfirmed) {
+  //     try {
+  //       await fetch(`/api/work/${work._id.toString()}`, {
+  //         method: "DELETE",
+  //       });
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // };
 
   return (
     <div

@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react'
 import Loader from '@components/Loader';
-import Feed from '@components/Feed';
 import Navbar from '@components/Navbar';
+import WorkList from '@components/List';
 
-export default function SearchPage({params}) {
+const SearchPage = ({ params }) => {
 
   const { query } = params;
 
@@ -19,26 +19,30 @@ export default function SearchPage({params}) {
       });
 
       if (!res.ok) {
-        console.log("not found");
+        console.log("Not found");
         return;
       }
+
       const data = await res.json();
-      console.log(data.workList)
-      setWorkList(data.workList);
+      setWorkList(data);
       setLoading(false);
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      console.log(err);
     }
   }
 
   useEffect(() => {
     getWorkList();
-  }, []);
+  }, [query]);
 
   return loading ? <Loader/> : (
     <>
       <Navbar />
-      <Feed searchWorkList={workList}/>
+      <WorkList data={workList} setWorkList={setWorkList} />
     </>
   )
 }
+
+
+
+export default SearchPage
