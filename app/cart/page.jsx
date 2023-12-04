@@ -2,20 +2,32 @@
 
 import "../../styles/Cart.scss";
 import Navbar from "@components/Navbar";
-import { AddCircle, RemoveCircle, Delete, ArrowCircleLeft } from "@mui/icons-material";
+import {
+  AddCircle,
+  RemoveCircle,
+  Delete,
+  ArrowCircleLeft,
+} from "@mui/icons-material";
 import variables from "../../styles/variables.module.scss";
-import { useEffect, useState } from "react";
-import { useCartStore } from "@store/store";
+import getStripe from "@lib/getStripe";
+import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const Cart = () => {
-  const { cart, setCart, removeFromCart } = useCartStore();
+  const { data: session, update } = useSession();
 
-  const [cartItems, setCartItems] = useState([]);
-  // useState to avoid hydrating error when { cart } imported from useCartStore is still loading
+  const cart = session?.user?.cart;
+  const userId = session?.user?._id;
 
-  useEffect(() => {
-    setCartItems(cart);
-  }, [cart]);
+  const updateCart = async (cart) => {
+    const response = await fetch(`/api/users/${userId}/cart`, {
+      method: "POST",
+      body: JSON.stringify({ cart }),
+    });
+
+    const data = await response.json();
+    update({ user: { cart: data } });
+  };
 
   const increaseQty = (cartItem) => {
     const newCart = cart.map((item) => {
@@ -24,7 +36,7 @@ const Cart = () => {
         return item;
       } else return item;
     });
-    setCart(newCart);
+    updateCart(newCart)
   };
 
   const decreaseQty = (cartItem) => {
@@ -34,34 +46,46 @@ const Cart = () => {
         return item;
       } else return item;
     });
-    setCart(newCart);
+    updateCart(newCart)
+  };
+
+  const removeFromCart = (cartItem) => {
+    const newCart = cart.filter((item) => item.workId !== cartItem.workId);
+    updateCart(newCart)
   };
 
   const calculateSubtotal = (cart) => {
-    return cart.reduce((total, item) => {
+    return cart?.reduce((total, item) => {
       return total + item.quantity * item.price;
     }, 0);
   };
 
-  const subtotal = calculateSubtotal(cartItems);
+  console.log(cart)
+
+
+  const subtotal = calculateSubtotal(cart);
 
   const handleCheckout = async () => {
-    const stripe = await getStripe()
+    const stripe = await getStripe();
 
-    const response = await fetch('/api/stripe', {
-      method: 'POST',
+    const response = await fetch("/api/stripe", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(cartItems)
-    })
+      body: JSON.stringify(cart),
+    });
 
     if (response.statusCode === 500) {
-      return
+      return;
     }
 
-    const data = await response.json()
-  }
+    const data = await response.json();
+
+    toast.loading("Redirecting...");
+
+    stripe.redirectToCheckout({ sessionId: data.id });
+  };
 
   return (
     <>
@@ -71,14 +95,14 @@ const Cart = () => {
           <div className="top">
             <h1>Your Cart</h1>
             <h2>
-              Subtotal: <span>${subtotal.toFixed(2)}</span>
+              Subtotal: <span>${subtotal?.toFixed(2)}</span>
             </h2>
           </div>
 
-          {cartItems?.length > 0 && (
+          {cart?.length > 0 && (
             <div className="all-items">
-              {cartItems?.map((item) => (
-                <div className="item">
+              {cart?.map((item, index) => (
+                <div className="item" key={index}>
                   <div className="item_info">
                     <img src={item.image} alt="" />
                     <div className="text">
@@ -113,7 +137,7 @@ const Cart = () => {
                   </div>
                   <div className="remove">
                     <Delete
-                      onClick={() => removeFromCart(item.workId)}
+                      onClick={() => removeFromCart(item)}
                       sx={{ cursor: "pointer" }}
                     />
                   </div>
@@ -121,8 +145,10 @@ const Cart = () => {
               ))}
 
               <div className="bottom">
-                <a href="/"><ArrowCircleLeft /> Continue shopping</a>
-                <button onClick={handleCheckout}>CHECK OUT NOW</button>
+                <a href="/">
+                  <ArrowCircleLeft /> Continue shopping
+                </a>
+                <button onClick={() => handleCheckout}>CHECK OUT NOW</button>
               </div>
             </div>
           )}

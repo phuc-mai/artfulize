@@ -1,8 +1,8 @@
 "use client";
 
 import "../../styles/Login.scss";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 
@@ -17,11 +17,11 @@ const Login = () => {
       redirect: false,
       email: email,
       password: password,
-      callbackUrl: "/",
+      callbackUrl: '/'
     });
 
     if (response.ok) {
-      router.push('/')
+      router.push("/");
     } else {
       console.error(response.error);
       setError("Wrong email or password. Please try again.");

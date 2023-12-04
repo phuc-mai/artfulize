@@ -29,7 +29,7 @@ export async function POST(req) {
 
     // With the file data in the buffer, you can do whatever you want with it.
     // For this, we'll just write it to the filesystem in a new location
-    const profileImagePath = `/Developer/Projects/artfulize/public/uploads/${file.name}`
+    const profileImagePath = `/Developer/Portfolio Projects/artfulize/public/uploads/${file.name}`
     await writeFile(profileImagePath, buffer)
     
     console.log(`open ${profileImagePath} to see the uploaded file`)

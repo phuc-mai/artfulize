@@ -64,7 +64,7 @@
     }
   }
 
-  .text {
+  .info {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -74,11 +74,20 @@
       font-size: 18px;
       margin-bottom: 5px;
     }
-  
-    p {
-      font-size: 15px;
+
+    .creator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
 
       span {
+        font-size: 15px;
         font-weight: 600;
       }
     }
@@ -91,7 +100,6 @@
       font-size: 17px;
     }
   }
-  
 
   .icon {
     position: absolute;

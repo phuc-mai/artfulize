@@ -1,46 +1,52 @@
-import { getSession } from "next-auth/react";
+import Stripe from 'stripe';
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).end(); // Method Not Allowed
-  }
+const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
 
-  const session = await getSession({ req });
+export const POST = async (req, res) => {
+  if (req.method === 'POST') {
+    const cart = await req.json()
+    console.log(cart)
 
-  if (!session) {
-    return res.status(401).end(); // Unauthorized
-  }
+    try {
+      const params = {
+        submit_type: 'pay',
+        mode: 'payment',
+        payment_method_types: ['card'],
+        billing_address_collection: 'auto',
+        shipping_options: [
+          { shipping_rate: 'shr_1MfufhDgraNiyvtnDGef2uwK' },
+        ],
+        line_items: cart.map((item) => {
+          return {
+            price_data: { 
+              currency: 'cad',
+              product_data: { 
+                name: item.title,
+                images: [item.image],
+              },
+              unit_amount: item.price * 100,
+            },
+            adjustable_quantity: {
+              enabled:true,
+              minimum: 1,
+            },
+            quantity: item.quantity
+          }          
+        }),
+        success_url: `${req.headers.origin}/success`,
+        cancel_url: `${req.headers.origin}/canceled`,
+      }
 
-  const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+      /* Create Checkout Sessions from body params */
+      const session = await stripe.checkout.sessions.create(params);
 
-  const { cartItems } = req.body
-
-  try {
-    const params = {
-      submit_type: "pay",
-      mode: "payment",
-      payment_method_types: ["card"],
-      billing_address_collection: "auto",
-      shipping_options: [
-        { shipping_rate: "shr_1MfugvDgraNiyvtnIq8XUhHz" },
-        { shipping_rate: "shr_1MfufhDgraNiyvtnDGef2uwK" },
-      ],
-      line_items: [
-        {
-          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-          price: "{{PRICE_ID}}",
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${req.headers.origin}/?success=true`,
-      cancel_url: `${req.headers.origin}/?canceled=true`,
-    };
-
-    // Create Checkout Sessions from body params.
-    const session = await stripe.checkout.sessions.create(params);
-    res.redirect(303, session.url);
-  } catch (err) {
-    res.status(err.statusCode || 500).json(err.message);
+      return new Response(JSON.stringify(session), { status: 200 })
+    } catch (err) {
+      console.log(err)
+      return new Response("Failed to checkout", { status: 500 })
+    }
+  } else {
+    res.setHeader('Allow', 'POST');
+    res.status(405).end('Method Not Allowed');
   }
 }

@@ -15,9 +15,8 @@ import {
 } from "@mui/icons-material";
 import { useSession } from "next-auth/react";
 
-const WorkCard = ({ work, handleDelete }) => {
+const WorkCard = ({ work }) => {
   const router = useRouter();
-  console.log(work)
 
   /* SLIDER FOR IMAGES */
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -54,21 +53,22 @@ const WorkCard = ({ work, handleDelete }) => {
   };
 
   /* DELETE WORK */
-  // const handleDelete = async () => {
-  //   const hasConfirmed = confirm(
-  //     "Are you sure you want to delete this prompt?"
-  //   );
+  const handleDelete = async () => {
+    const hasConfirmed = confirm(
+      "Are you sure you want to delete this prompt?"
+    );
 
-  //   if (hasConfirmed) {
-  //     try {
-  //       await fetch(`/api/work/${work._id.toString()}`, {
-  //         method: "DELETE",
-  //       });
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // };
+    if (hasConfirmed) {
+      try {
+        await fetch(`/api/work/${work._id.toString()}`, {
+          method: "DELETE",
+        });
+        window.location.reload()
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <div
@@ -108,13 +108,13 @@ const WorkCard = ({ work, handleDelete }) => {
         </div>
       </div>
 
-      <div className="text">
+      <div className="info">
         <div>
           <h3>{work.title}</h3>
-          <p>
-            by <span>{work.creator.username}</span> in{" "}
-            <span>{work.category}</span>
-          </p>
+          <div className="creator">
+            <img src={work.creator.profileImagePath} alt="creator" />
+            <span>{work.creator.username}</span> in <span>{work.category}</span>
+          </div>
         </div>
         <div className="price">$ {work.price}</div>
       </div>

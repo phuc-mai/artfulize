@@ -29,6 +29,10 @@ const UserSchema = new Schema({
     type: Array,
     default: [],
   },
+  order: {
+    type: Array,
+    default: [],
+  },
   work: {
     type: Array,
     default: [],

@@ -17,7 +17,6 @@ import {
 import "../../styles/WorkDetails.scss";
 import Navbar from "@components/Navbar";
 import Loader from "@components/Loader";
-import { useCartStore } from "@store/store";
 
 const WorkDetails = () => {
   const router = useRouter();
@@ -63,7 +62,6 @@ const WorkDetails = () => {
   };
 
   /* GET WORK DETAILS */
-
   useEffect(() => {
     const getWorkDetails = async () => {
       const response = await fetch(`api/work/${workId}`);
@@ -92,18 +90,41 @@ const WorkDetails = () => {
   };
 
   /* ADD TO CART */
-  const { addToCart } = useCartStore();
+  const cart = session?.user?.cart;
 
-  const addToCartHandler = () => {
-      addToCart({
-        workId: work._id,
-        image: work.workPhotosPaths[0],
-        title: work.title,
-        category: work.category,
-        creator: work.creator,
-        price: work.price,
-        quantity: 1,
-      });
+  const isInCart = cart?.find((item) => item?.workId === workId);
+
+  const addToCart = async () => {
+    const newCartItem = {
+      workId,
+      image: work.workPhotosPaths[0],
+      title: work.title,
+      category: work.category,
+      creator: work.creator,
+      price: work.price,
+      quantity: 1,
+    };
+
+    if (!isInCart) {
+      const newCart = [...cart, newCartItem];
+
+      try {
+        await fetch(`/api/users/${userId}/cart`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ cart: newCart }),
+        });
+
+        update({ user: { cart: newCart } });
+      } catch (err) {
+        console.error("Error adding to cart:", err.message);
+      }
+    } else {
+      confirm("This item is already in Cart!");
+      return
+    }
   };
 
   return loading ? (
@@ -198,7 +219,7 @@ const WorkDetails = () => {
         <hr />
         <h3>About this product</h3>
         <p>{work.description}</p>
-        <button type="submit" onClick={() => addToCartHandler()}>
+        <button type="submit" onClick={addToCart}>
           <ShoppingCart /> ADD TO CART
         </button>
       </div>

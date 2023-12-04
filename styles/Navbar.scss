@@ -2,14 +2,14 @@
 @import "./breakpoints.scss";
 
 .navbar {
-  padding: 15px 60px;
+  padding: 15px 80px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
 
   @include sm {
-    padding: 10px 20px;
+    padding: 10px;
   }
 
   img {
@@ -45,6 +45,10 @@
     align-items: center;
     gap: 20px;
 
+    @include sm {
+      gap: 0px;
+    }
+
     .cart {
       margin: 0;
       border: 1px solid $grey;
@@ -62,16 +66,11 @@
     &_account {
       display: flex;
       align-items: center;
-      padding: 0 10px;
       border: none;
       display: flex;
       gap: 10px;
       background-color: white;
       cursor: pointer;
-
-      &:hover {
-        @include shadow;
-      }
 
       img {
         width: 40px;
