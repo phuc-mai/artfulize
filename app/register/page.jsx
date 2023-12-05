@@ -1,7 +1,7 @@
 "use client";
 
 import "../../styles/Register.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
@@ -28,14 +28,12 @@ const Register = () => {
 
   const [passwordMatch, setPasswordMatch] = useState(true);
 
+  useEffect(() => {
+    setPasswordMatch(formData.password === formData.confirmPassword || formData.confirmPassword === "")
+  })
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (formData.password === formData.confirmPassword) {
-      setPasswordMatch(true);
-    } else {
-      setPasswordMatch(false);
-    }
 
     try {
       const form_data = new FormData();
