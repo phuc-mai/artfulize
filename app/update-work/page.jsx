@@ -6,9 +6,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "@components/Navbar";
 import Form from "@components/Form";
 import Loader from "@components/Loader";
+import { useSession } from "next-auth/react";
 
 const UpdateForm = () => {
   const router = useRouter();
+
+  const { data: session } = useSession();
 
   const [loading, setLoading] = useState(true);
 
@@ -23,46 +26,46 @@ const UpdateForm = () => {
     photos: [],
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setWork((prevWork) => {
-      return {
-        ...prevWork,
-        [name]: value,
-      };
-    });
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setWork((prevWork) => {
+  //     return {
+  //       ...prevWork,
+  //       [name]: value,
+  //     };
+  //   });
+  // };
 
-  /* UPLOAD & REMOVE PHOTOS */
+  // /* UPLOAD & REMOVE PHOTOS */
 
-  const handleUploadPhotos = (e) => {
-    const newPhotos = e.target.files;
-    setWork((prevWork) => {
-      return {
-        ...prevWork,
-        photos: [...prevWork.photos, ...newPhotos],
-      };
-    });
-  };
+  // const handleUploadPhotos = (e) => {
+  //   const newPhotos = e.target.files;
+  //   setWork((prevWork) => {
+  //     return {
+  //       ...prevWork,
+  //       photos: [...prevWork.photos, ...newPhotos],
+  //     };
+  //   });
+  // };
 
-  const handleRemovePhoto = (indexToRemove) => {
-    setWork((prevWork) => {
-      return {
-        ...prevWork,
-        photos: prevWork.photos.filter((_, index) => index !== indexToRemove),
-      };
-    });
-  };
+  // const handleRemovePhoto = (indexToRemove) => {
+  //   setWork((prevWork) => {
+  //     return {
+  //       ...prevWork,
+  //       photos: prevWork.photos.filter((_, index) => index !== indexToRemove),
+  //     };
+  //   });
+  // };
 
-  const handleDragPhoto = (result) => {
-    if (!result.destination) return;
+  // const handleDragPhoto = (result) => {
+  //   if (!result.destination) return;
 
-    const items = Array.from(work.photos);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+  //   const items = Array.from(work.photos);
+  //   const [reorderedItem] = items.splice(result.source.index, 1);
+  //   items.splice(result.destination.index, 0, reorderedItem);
 
-    setWork({ ...work, photos: items });
-  };
+  //   setWork({ ...work, photos: items });
+  // };
 
   useEffect(() => {
     const getWorkDetails = async () => {
@@ -108,7 +111,7 @@ const UpdateForm = () => {
       });
 
       if (response.ok) {
-        router.push("/");
+        router.push(`/shop?id=${session?.user?._id}`);
       }
     } catch (error) {
       console.log("Publish Work failed", error.message);
@@ -126,10 +129,10 @@ const UpdateForm = () => {
         type="Update"
         work={work}
         setWork={setWork}
-        handleDragPhoto={handleDragPhoto}
-        handleRemovePhoto={handleRemovePhoto}
-        handleUploadPhotos={handleUploadPhotos}
-        handleChange={handleChange}
+        // handleDragPhoto={handleDragPhoto}
+        // handleRemovePhoto={handleRemovePhoto}
+        // handleUploadPhotos={handleUploadPhotos}
+        // handleChange={handleChange}
         handlePost={handlePost}
       />
     </>

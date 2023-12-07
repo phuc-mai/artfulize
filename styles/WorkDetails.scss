@@ -156,6 +156,8 @@
 
   button {
     @include buttonStyle;
+
+    margin-top: 30px;
     
     &:hover {
       box-shadow: 0 0 10px 3px rgb(98, 98, 98);

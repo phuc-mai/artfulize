@@ -34,6 +34,10 @@ const Navbar = () => {
 
   return (
     <div className="navbar">
+      <a href="/">
+        <img src="/assets/logo.png" alt="logo" />
+      </a>
+      
       <div className="navbar_search">
         <form
           onSubmit={(e) => {
@@ -54,10 +58,6 @@ const Navbar = () => {
           </IconButton>
         </form>
       </div>
-
-      <a href="/">
-        <img src="/assets/logo.png" alt="logo" />
-      </a>
 
       <div className="navbar_right">
         {user && (
@@ -96,7 +96,7 @@ const Navbar = () => {
             <Link href="/cart">Cart</Link>
             <Link href="/order">Order</Link>
             <Link href={`/shop?id=${user._id}`}>Your Shop</Link>
-            <Link href="/create-work">Sell Your Work</Link>
+            <Link href="/create-work">Publish Your Work</Link>
             <a onClick={handleLogout}>Log Out </a>
           </div>
         )}

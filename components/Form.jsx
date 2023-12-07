@@ -4,17 +4,62 @@ import { categories } from "@data";
 import { IoIosImages } from "react-icons/io";
 import { BiTrash } from "react-icons/bi";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useSession } from "next-auth/react";
 
 const Form = ({
   type,
   work,
   setWork,
-  handleDragPhoto,
-  handleRemovePhoto,
-  handleUploadPhotos,
-  handleChange,
+  // handleDragPhoto,
+  // handleRemovePhoto,
+  // handleUploadPhotos,
+  // handleChange,
   handlePost,
 }) => {
+  
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setWork((prevWork) => {
+      return {
+        ...prevWork,
+        [name]: value,
+      };
+    });
+  };
+
+  /* UPLOAD & REMOVE PHOTOS */
+  
+  const handleUploadPhotos = (e) => {
+    const newPhotos = e.target.files;
+    setWork((prevWork) => {
+      return {
+        ...prevWork,
+        photos: [...prevWork.photos, ...newPhotos],
+      };
+    });
+  };
+
+  const handleRemovePhoto = (indexToRemove) => {
+    setWork((prevWork) => {
+      return {
+        ...prevWork,
+        photos: prevWork.photos.filter((_, index) => index !== indexToRemove),
+      };
+    });
+  };
+
+  const handleDragPhoto = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(work.photos);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setWork({ ...work, photos: items });
+  };
+
+
   return (
     <div className="form">
       <h1>{type} Your Work</h1>
@@ -34,7 +79,7 @@ const Form = ({
           ))}
         </div>
 
-        <h3>Add some photos of your place</h3>
+        <h3>Add some photos of your work</h3>
         <DragDropContext onDragEnd={handleDragPhoto}>
           <Droppable droppableId="photos" direction="horizontal">
             {(provided) => (

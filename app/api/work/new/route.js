@@ -1,6 +1,7 @@
 import { connectToDB } from "@app/mongodb/database";
 import Work from "@models/Work";
 import { writeFile } from "fs/promises"
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {

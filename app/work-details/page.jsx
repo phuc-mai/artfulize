@@ -219,6 +219,7 @@ const WorkDetails = () => {
         <hr />
         <h3>About this product</h3>
         <p>{work.description}</p>
+        <h1>${work.price}</h1>
         <button type="submit" onClick={addToCart}>
           <ShoppingCart /> ADD TO CART
         </button>
