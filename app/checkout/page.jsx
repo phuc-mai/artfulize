@@ -19,6 +19,7 @@ const Checkout = () => {
       console.log(error);
     } else {
       // Send the token to your server for further processing
+      
       console.log(token);
     }
   };
@@ -32,9 +33,12 @@ const Checkout = () => {
         <button type="submit" disabled={!stripe}>
           Pay Now
         </button>
+        
       </form>
     </Elements>
   );
 };
 
 export default Checkout;
+
+

@@ -31,6 +31,8 @@ export async function POST(req) {
     for (const photo of photos) {
       // Read the photo as an ArrayBuffer
       const bytes = await photo.arrayBuffer();
+
+      // Converts it to a Buffer
       const buffer = Buffer.from(bytes);
 
       // Define the destination path for the uploaded file
@@ -53,7 +55,7 @@ export async function POST(req) {
       workPhotosPaths,
     });
 
-    /* save new User */
+    /* Save new User */
     await newWork.save();
 
     /* Send a success response */

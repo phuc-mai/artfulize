@@ -4,20 +4,14 @@ import { categories } from "@data";
 import { IoIosImages } from "react-icons/io";
 import { BiTrash } from "react-icons/bi";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useSession } from "next-auth/react";
 
 const Form = ({
   type,
   work,
   setWork,
-  // handleDragPhoto,
-  // handleRemovePhoto,
-  // handleUploadPhotos,
-  // handleChange,
   handlePost,
 }) => {
   
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setWork((prevWork) => {
@@ -28,7 +22,7 @@ const Form = ({
     });
   };
 
-  /* UPLOAD & REMOVE PHOTOS */
+  /* UPLOAD, DRAG & REMOVE PHOTOS */
   
   const handleUploadPhotos = (e) => {
     const newPhotos = e.target.files;

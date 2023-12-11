@@ -6,7 +6,6 @@ import Form from "@components/Form";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { data } from "autoprefixer";
 import Loader from "@components/Loader";
 
 const CreateWork = () => {

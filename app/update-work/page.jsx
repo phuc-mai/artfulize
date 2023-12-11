@@ -26,47 +26,6 @@ const UpdateForm = () => {
     photos: [],
   });
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setWork((prevWork) => {
-  //     return {
-  //       ...prevWork,
-  //       [name]: value,
-  //     };
-  //   });
-  // };
-
-  // /* UPLOAD & REMOVE PHOTOS */
-
-  // const handleUploadPhotos = (e) => {
-  //   const newPhotos = e.target.files;
-  //   setWork((prevWork) => {
-  //     return {
-  //       ...prevWork,
-  //       photos: [...prevWork.photos, ...newPhotos],
-  //     };
-  //   });
-  // };
-
-  // const handleRemovePhoto = (indexToRemove) => {
-  //   setWork((prevWork) => {
-  //     return {
-  //       ...prevWork,
-  //       photos: prevWork.photos.filter((_, index) => index !== indexToRemove),
-  //     };
-  //   });
-  // };
-
-  // const handleDragPhoto = (result) => {
-  //   if (!result.destination) return;
-
-  //   const items = Array.from(work.photos);
-  //   const [reorderedItem] = items.splice(result.source.index, 1);
-  //   items.splice(result.destination.index, 0, reorderedItem);
-
-  //   setWork({ ...work, photos: items });
-  // };
-
   useEffect(() => {
     const getWorkDetails = async () => {
       const response = await fetch(`api/work/${workId}`);
@@ -129,10 +88,6 @@ const UpdateForm = () => {
         type="Update"
         work={work}
         setWork={setWork}
-        // handleDragPhoto={handleDragPhoto}
-        // handleRemovePhoto={handleRemovePhoto}
-        // handleUploadPhotos={handleUploadPhotos}
-        // handleChange={handleChange}
         handlePost={handlePost}
       />
     </>

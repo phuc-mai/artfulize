@@ -58,6 +58,7 @@ const handler = NextAuth({
 
         /* To combine database get from MongoDB to session data get from NextAuth */
         session.user = { ...session.user, ...sessionUser._doc };
+
       }
       return Promise.resolve(session);
     },
@@ -78,6 +79,7 @@ const handler = NextAuth({
               wish: [],
               cart: [],
               work: [],
+              orders: [],
             });
           }
           return existingUser;

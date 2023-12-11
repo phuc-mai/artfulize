@@ -59,21 +59,23 @@ const Cart = () => {
       return total + item.quantity * item.price;
     }, 0);
   };
-
-  console.log(cart)
-
-
+  
   const subtotal = calculateSubtotal(cart);
 
+  console.log(cart)
+  
   const handleCheckout = async () => {
     const stripe = await getStripe();
 
     const response = await fetch("/api/stripe", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(cart),
+      body: JSON.stringify({
+        cart: cart,
+        userId: userId,
+      }),
     });
 
     if (response.statusCode === 500) {
@@ -84,7 +86,12 @@ const Cart = () => {
 
     toast.loading("Redirecting...");
 
-    stripe.redirectToCheckout({ sessionId: data.id });
+    const res =stripe.redirectToCheckout({ sessionId: data.id });
+    console.log(res)
+    if(res.error) {
+      console.log(res.error);
+      toast.error(res.error.message);
+    }
   };
 
   return (
@@ -148,7 +155,7 @@ const Cart = () => {
                 <a href="/">
                   <ArrowCircleLeft /> Continue shopping
                 </a>
-                <button onClick={() => handleCheckout}>CHECK OUT NOW</button>
+                <button onClick={() => handleCheckout()}>CHECK OUT NOW</button>
               </div>
             </div>
           )}

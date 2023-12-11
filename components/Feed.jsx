@@ -1,6 +1,6 @@
 import "../styles/Categories.scss";
 import { categories } from "@data";
-import WorkList from "./List";
+import List from "./List";
 
 import { useState, useEffect } from "react";
 import Loader from "./Loader";
@@ -15,7 +15,7 @@ const Feed = ({ searchWorkList = "" }) => {
       const response = await fetch(
         selectedCategory !== ""
           ? `api/work/list/${selectedCategory}`
-          : "api/work/list/all"
+          : "api/work/list/All"
       );
       const data = await response.json();
       setWorkList(data);
@@ -44,7 +44,7 @@ const Feed = ({ searchWorkList = "" }) => {
         ))}
       </div>
 
-      <WorkList data={workList} setWorkList={setWorkList} />
+      <List data={workList} setWorkList={setWorkList} />
     </>
   );
 };
