@@ -210,7 +210,7 @@ const WorkDetails = () => {
         <div
           className="profile"
           onClick={() => {
-            router.push(`/profile?id=${work.creator._id}`);
+            router.push(`/shop?id=${work.creator._id}`);
           }}
         >
           <img src={work.creator.profileImagePath} alt="profile" />

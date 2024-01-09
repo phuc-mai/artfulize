@@ -61,8 +61,6 @@ const Cart = () => {
   };
   
   const subtotal = calculateSubtotal(cart);
-
-  console.log(cart)
   
   const handleCheckout = async () => {
     const stripe = await getStripe();
