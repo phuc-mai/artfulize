@@ -1,5 +1,5 @@
 import User from '@models/User'
-import { connectToDB } from '@mongodb/database'
+import { connectToDB } from '@app/mongodb/database'
 
 const stripe = require('stripe')(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY)
 

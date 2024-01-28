@@ -44,6 +44,11 @@ const WorkCard = ({ work }) => {
   const isLiked = wishlist?.find((item) => item?._id === work._id);
 
   const patchWishlist = async () => {
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+    
     const response = await fetch(`/api/users/${userId}/wishlist/${work._id}`, {
       method: "PATCH",
     });

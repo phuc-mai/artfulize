@@ -81,6 +81,11 @@ const WorkDetails = () => {
   const isLiked = wishlist?.find((item) => item?._id === workId);
 
   const patchWishlist = async () => {
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+    
     const response = await fetch(`/api/users/${userId}/wishlist/${workId}`, {
       method: "PATCH",
     });
@@ -95,6 +100,11 @@ const WorkDetails = () => {
   const isInCart = cart?.find((item) => item?.workId === workId);
 
   const addToCart = async () => {
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+
     const newCartItem = {
       workId,
       image: work.workPhotosPaths[0],
